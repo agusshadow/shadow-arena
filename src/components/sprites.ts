@@ -128,8 +128,8 @@ const SHADOW_PALETTE = {
   g: '#2f4a5e',
   w: '#ffffff',
   e: '#6b4423',
-  b: '#4a3426',
-  B: '#2e2018',
+  b: '#59627a',
+  B: '#454e62',
   m: '#9a5a4a',
   t: '#475569',
   p: '#1f2937',
@@ -166,7 +166,7 @@ export const HUMAN_DEFS: Partial<Record<ArtId, HumanDef>> = {
   // Corona, auriculares y ropa real.
   'shadow-rey': {
     layers: [HEADPHONES, CROWN],
-    palette: { ...SHADOW_PALETTE, t: '#4c1d95', h: '#312e81', H: '#4f46e5', p: '#0f172a', P: '#a78bfa' },
+    palette: { ...SHADOW_PALETTE, t: '#4c1d95', p: '#0f172a', P: '#a78bfa' },
   },
 }
 
