@@ -24,6 +24,9 @@ export const MOVES: Record<string, Move> = {
   latigo: { id: 'latigo', name: 'Látigo', type: 'planta', power: 60, accuracy: 90 },
   hoja: { id: 'hoja', name: 'Hoja filosa', type: 'planta', power: 40, accuracy: 100 },
   garra: { id: 'garra', name: 'Garra umbría', type: 'sombra', power: 55, accuracy: 95 },
+  sonrisa: { id: 'sonrisa', name: 'Sonrisa letal', type: 'sombra', power: 60, accuracy: 90 },
+  abrazo: { id: 'abrazo', name: 'Abrazo de oso', type: 'sombra', power: 45, accuracy: 100 },
+  rulazo: { id: 'rulazo', name: 'Rulazo', type: 'planta', power: 50, accuracy: 100 },
   eclipse: { id: 'eclipse', name: 'Eclipse', type: 'sombra', power: 75, accuracy: 85 },
 }
 
@@ -51,6 +54,15 @@ export const SPECIES: Record<string, Species> = {
     base: { hp: 55, attack: 52, defense: 52, speed: 47 },
     moves: ['latigo', 'hoja', 'garra', 'placaje'],
     art: 'brotin',
+  },
+  mateo: {
+    id: 'mateo',
+    name: 'Mateo',
+    type: 'sombra',
+    base: { hp: 58, attack: 55, defense: 52, speed: 50 },
+    moves: ['sonrisa', 'abrazo', 'rulazo', 'brasa'],
+    art: 'umbra',
+    image: '/characters/mateo.jpg',
   },
   chispo: {
     id: 'chispo',
@@ -94,7 +106,7 @@ export const SPECIES: Record<string, Species> = {
   },
 }
 
-export const STARTERS = ['brasito', 'gotin', 'brotin'] as const
+export const STARTERS = ['brasito', 'gotin', 'brotin', 'mateo'] as const
 
 /** Nivel inicial del jugador; sube LEVELS_PER_WIN con cada victoria. */
 export const START_LEVEL = 5

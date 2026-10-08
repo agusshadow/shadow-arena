@@ -15,7 +15,7 @@ export function CreatureArt({ species, className = '', label }: Props) {
 
   // Si la especie define una imagen (por ejemplo una foto), reemplaza al dibujo.
   if (species.image) {
-    return <img src={species.image} alt={alt} className={`object-cover ${className}`} draggable={false} />
+    return <img src={species.image} alt={alt} className={`border-4 border-black object-cover ${className}`} draggable={false} />
   }
 
   return (

@@ -31,7 +31,7 @@ export function TitleScreen({
         </h1>
         <div className="mx-auto mt-3 flex w-fit gap-3" aria-hidden="true">
           {STARTERS.map((id) => (
-            <CreatureArt key={id} species={SPECIES[id]} className="idle size-20" />
+            <CreatureArt key={id} species={SPECIES[id]} className="idle size-16" />
           ))}
         </div>
       </div>
