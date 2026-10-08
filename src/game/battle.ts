@@ -1,5 +1,5 @@
 import { MOVES, SPECIES, TYPE_CHART, TYPE_LABEL } from './data'
-import type { BattleEvent, BattleState, Fighter, Move, Rng, Stats } from './types'
+import type { BattleEvent, BattleState, BattleStats, Fighter, Move, Rng, Stats } from './types'
 
 export function computeStats(base: { hp: number; attack: number; defense: number; speed: number }, level: number): Stats {
   const scale = (b: number) => Math.floor((b * 2 * level) / 100) + 5
@@ -36,8 +36,8 @@ export function calculateDamage(attacker: Fighter, defender: Fighter, move: Move
 }
 
 /** Elige el ataque del rival: casi siempre el más efectivo, a veces uno al azar. */
-export function chooseEnemyMove(enemy: Fighter, player: Fighter, rng: Rng): Move {
-  if (rng() < 0.3) return enemy.moves[Math.floor(rng() * enemy.moves.length)]
+export function chooseEnemyMove(enemy: Fighter, player: Fighter, rng: Rng, randomness = 0.3): Move {
+  if (rng() < randomness) return enemy.moves[Math.floor(rng() * enemy.moves.length)]
   const score = (m: Move) => m.power * typeMultiplier(m.type, player.species.type) * (m.type === enemy.species.type ? 1.5 : 1)
   return enemy.moves.reduce((best, m) => (score(m) > score(best) ? m : best))
 }
@@ -95,11 +95,12 @@ export function resolveTurn(
   state: BattleState,
   playerMove: Move,
   rng: Rng,
+  aiRandomness = 0.3,
 ): { state: BattleState; events: BattleEvent[] } {
   if (state.outcome !== 'ongoing') return { state, events: [] }
 
   const events: BattleEvent[] = []
-  const enemyMove = chooseEnemyMove(state.enemy, state.player, rng)
+  const enemyMove = chooseEnemyMove(state.enemy, state.player, rng, aiRandomness)
 
   const playerFirst =
     state.player.stats.speed > state.enemy.stats.speed ||
@@ -126,6 +127,15 @@ export function resolveTurn(
   if (outcome === 'player-lost') events.push({ kind: 'text', text: 'Perdiste el combate...' })
 
   return { state: { ...current, outcome }, events }
+}
+
+/** Estadísticas de un turno comparando el estado antes y después. */
+export function battleStatsBetween(before: BattleState, after: BattleState): BattleStats {
+  return {
+    damageDealt: before.enemy.hp - after.enemy.hp,
+    damageTaken: before.player.hp - after.player.hp,
+    turns: 1,
+  }
 }
 
 export function typeName(type: Move['type']): string {

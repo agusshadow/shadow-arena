@@ -1,4 +1,4 @@
-import type { ElementType, Move, Species, Stage } from './types'
+import type { Difficulty, ElementType, Move, Species, Stage } from './types'
 
 /** Multiplicador de daño: CHART[tipo del ataque][tipo del defensor]. */
 export const TYPE_CHART: Record<ElementType, Record<ElementType, number>> = {
@@ -119,3 +119,25 @@ export const STAGES: Stage[] = [
   { speciesId: 'umbra', level: 7, title: 'Arena 4' },
   { speciesId: 'rey', level: 10, title: 'Jefe final' },
 ]
+
+export interface DifficultyConfig {
+  label: string
+  description: string
+  /** Se suma al nivel de cada rival. */
+  levelOffset: number
+  /** Probabilidad de que el rival elija un ataque al azar en vez del mejor. */
+  aiRandomness: number
+}
+
+export const DIFFICULTIES: Record<Difficulty, DifficultyConfig> = {
+  facil: { label: 'Fácil', description: 'Rivales más débiles y menos astutos.', levelOffset: -2, aiRandomness: 0.6 },
+  normal: { label: 'Normal', description: 'La experiencia pensada del juego.', levelOffset: 0, aiRandomness: 0.3 },
+  dificil: { label: 'Difícil', description: 'Rivales más fuertes que casi siempre eligen bien.', levelOffset: 2, aiRandomness: 0.1 },
+}
+
+export const DIFFICULTY_ORDER: Difficulty[] = ['facil', 'normal', 'dificil']
+
+/** Nivel real del rival de una etapa según la dificultad (mínimo 1). */
+export function enemyLevel(stage: Stage, difficulty: Difficulty): number {
+  return Math.max(1, stage.level + DIFFICULTIES[difficulty].levelOffset)
+}

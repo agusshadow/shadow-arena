@@ -69,3 +69,13 @@ export interface Stage {
   level: number
   title: string
 }
+
+export type Difficulty = 'facil' | 'normal' | 'dificil'
+
+export interface BattleStats {
+  /** Daño que hiciste al rival. */
+  damageDealt: number
+  /** Daño que recibiste. */
+  damageTaken: number
+  turns: number
+}
