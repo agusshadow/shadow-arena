@@ -103,6 +103,7 @@ export const SPECIES: Record<string, Species> = {
     base: { hp: 75, attack: 70, defense: 65, speed: 65 },
     moves: ['eclipse', 'garra', 'llamarada', 'chorro'],
     art: 'rey',
+    image: '/characters/rey-sombra.png',
   },
 }
 
