@@ -108,6 +108,16 @@ const CROWN: Layer = {
   2: 'CcccrrcccC',
 }
 
+/** Gorro de cocinero (toque) blanco con borde oscuro. */
+const CHEF_HAT: Layer = {
+  0: '.ooo.oooo.ooo.',
+  1: 'owwwwwwwwwwwwo',
+  2: 'owwWwwwwwwWwwo',
+  3: 'owwwwwwwwwwwwo',
+  4: 'owwwwWwwwwwwwo',
+  5: 'oWWWWWWWWWWWWo',
+}
+
 /** Corchetes de código a los lados de la cabeza: < y >. */
 const BRACKETS: Layer = (() => {
   const left = ['..a', '.a.', 'a..', '.a.', '..a']
@@ -162,6 +172,11 @@ export const HUMAN_DEFS: Partial<Record<ArtId, HumanDef>> = {
   'shadow-gamer': {
     layers: [HEADPHONES],
     palette: { ...SHADOW_PALETTE, t: '#dc2626', p: '#111827', P: '#f97316' },
+  },
+  // Gorro de cocinero y chaquetilla blanca.
+  'shadow-chef': {
+    layers: [CHEF_HAT],
+    palette: { ...SHADOW_PALETTE, t: '#f1f5f9', W: '#cbd5e1' },
   },
   // Corona, auriculares y ropa real.
   'shadow-rey': {

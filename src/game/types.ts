@@ -32,7 +32,7 @@ export interface Species {
   image?: string
 }
 
-export type ArtId = 'brasito' | 'gotin' | 'brotin' | 'shadow' | 'shadow-dj' | 'shadow-dev' | 'shadow-gamer' | 'shadow-rey'
+export type ArtId = 'brasito' | 'gotin' | 'brotin' | 'shadow' | 'shadow-dj' | 'shadow-dev' | 'shadow-gamer' | 'shadow-chef' | 'shadow-rey'
 
 export interface Stats {
   maxHp: number

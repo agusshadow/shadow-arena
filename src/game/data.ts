@@ -28,6 +28,8 @@ export const MOVES: Record<string, Move> = {
   abrazo: { id: 'abrazo', name: 'Abrazo de oso', type: 'sombra', power: 45, accuracy: 100 },
   rulazo: { id: 'rulazo', name: 'Rulazo', type: 'planta', power: 50, accuracy: 100 },
   eclipse: { id: 'eclipse', name: 'Eclipse', type: 'sombra', power: 75, accuracy: 85 },
+  hervor: { id: 'hervor', name: 'Hervor', type: 'agua', power: 60, accuracy: 90 },
+  sartenazo: { id: 'sartenazo', name: 'Sartenazo', type: 'sombra', power: 45, accuracy: 100 },
   rage: { id: 'rage', name: 'Rage quit', type: 'fuego', power: 40, accuracy: 100 },
   bajo: { id: 'bajo', name: 'Bajo a fondo', type: 'agua', power: 40, accuracy: 100 },
   bug: { id: 'bug', name: 'Bug crítico', type: 'planta', power: 40, accuracy: 100 },
@@ -92,6 +94,14 @@ export const SPECIES: Record<string, Species> = {
     moves: ['bug', 'placaje'],
     art: 'shadow-dev',
   },
+  chef: {
+    id: 'chef',
+    name: 'Shadow Cocinero',
+    type: 'agua',
+    base: { hp: 52, attack: 55, defense: 50, speed: 48 },
+    moves: ['hervor', 'sartenazo'],
+    art: 'shadow-chef',
+  },
   shadow: {
     id: 'shadow',
     name: 'Shadow',
@@ -121,7 +131,8 @@ export const STAGES: Stage[] = [
   { speciesId: 'dj', level: 4, title: 'Arena 2' },
   { speciesId: 'dev', level: 5, title: 'Arena 3' },
   { speciesId: 'shadow', level: 7, title: 'Arena 4' },
-  { speciesId: 'rey', level: 10, title: 'Jefe final' },
+  { speciesId: 'chef', level: 9, title: 'Arena 5' },
+  { speciesId: 'rey', level: 12, title: 'Jefe final' },
 ]
 
 export interface DifficultyConfig {
