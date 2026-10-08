@@ -1,4 +1,4 @@
-import { STAGES, START_LEVEL } from './data'
+import { LEVELS_PER_WIN, STAGES, START_LEVEL } from './data'
 
 /** Progreso de una partida: se guarda para poder seguir al recargar. */
 export interface Run {
@@ -25,7 +25,7 @@ export function newRun(starterId: string): Run {
 export function advance(run: Run): Run | null {
   const next = run.stage + 1
   if (next >= STAGES.length) return null
-  return { ...run, level: run.level + 1, stage: next }
+  return { ...run, level: run.level + LEVELS_PER_WIN, stage: next }
 }
 
 export function loadSave(): Save {

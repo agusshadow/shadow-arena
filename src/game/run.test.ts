@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { STAGES, START_LEVEL } from './data'
+import { LEVELS_PER_WIN, STAGES, START_LEVEL } from './data'
 import { advance, newRun } from './run'
 
 describe('run', () => {
@@ -9,7 +9,7 @@ describe('run', () => {
 
   it('al ganar sube de nivel y pasa a la siguiente etapa', () => {
     const next = advance(newRun('gotin'))
-    expect(next).toEqual({ starterId: 'gotin', level: START_LEVEL + 1, stage: 1 })
+    expect(next).toEqual({ starterId: 'gotin', level: START_LEVEL + LEVELS_PER_WIN, stage: 1 })
   })
 
   it('devuelve null al superar la última etapa', () => {

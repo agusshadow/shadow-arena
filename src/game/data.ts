@@ -40,7 +40,7 @@ export const SPECIES: Record<string, Species> = {
     id: 'gotin',
     name: 'Gotín',
     type: 'agua',
-    base: { hp: 55, attack: 45, defense: 55, speed: 40 },
+    base: { hp: 58, attack: 50, defense: 55, speed: 42 },
     moves: ['chorro', 'burbuja', 'garra', 'placaje'],
     art: 'gotin',
   },
@@ -48,7 +48,7 @@ export const SPECIES: Record<string, Species> = {
     id: 'brotin',
     name: 'Brotín',
     type: 'planta',
-    base: { hp: 50, attack: 50, defense: 50, speed: 45 },
+    base: { hp: 55, attack: 52, defense: 52, speed: 47 },
     moves: ['latigo', 'hoja', 'garra', 'placaje'],
     art: 'brotin',
   },
@@ -96,11 +96,12 @@ export const SPECIES: Record<string, Species> = {
 
 export const STARTERS = ['brasito', 'gotin', 'brotin'] as const
 
-/** Nivel inicial del jugador; sube 1 con cada victoria. */
+/** Nivel inicial del jugador; sube LEVELS_PER_WIN con cada victoria. */
 export const START_LEVEL = 5
+export const LEVELS_PER_WIN = 2
 
 export const STAGES: Stage[] = [
-  { speciesId: 'chispo', level: 3, title: 'Arena 1' },
+  { speciesId: 'chispo', level: 2, title: 'Arena 1' },
   { speciesId: 'pozo', level: 4, title: 'Arena 2' },
   { speciesId: 'zarzo', level: 5, title: 'Arena 3' },
   { speciesId: 'umbra', level: 7, title: 'Arena 4' },
