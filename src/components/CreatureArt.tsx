@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { Species } from '../game/types'
-import { spritePixels } from './sprites'
+import { buildSprite } from './sprites'
 
 interface Props {
   species: Species
@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function CreatureArt({ species, className = '', label }: Props) {
-  const pixels = useMemo(() => spritePixels(species.art), [species.art])
+  const sprite = useMemo(() => buildSprite(species.art), [species.art])
   const alt = label ?? species.name
 
   // Si la especie define una imagen (por ejemplo una foto), reemplaza al dibujo.
@@ -19,8 +19,8 @@ export function CreatureArt({ species, className = '', label }: Props) {
   }
 
   return (
-    <svg viewBox="0 0 16 16" role="img" aria-label={alt} shapeRendering="crispEdges" className={className}>
-      {pixels.map((p) => (
+    <svg viewBox={`0 0 ${sprite.size} ${sprite.size}`} role="img" aria-label={alt} shapeRendering="crispEdges" className={className}>
+      {sprite.pixels.map((p) => (
         <rect key={`${p.x}-${p.y}`} x={p.x} y={p.y} width={p.w} height={1} fill={p.fill} />
       ))}
     </svg>

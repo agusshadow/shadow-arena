@@ -30,7 +30,7 @@ describe('run', () => {
 
 describe('dificultad', () => {
   it('ajusta el nivel del rival y nunca baja de 1', () => {
-    const stage = { speciesId: 'chispo', level: 2, title: 'x' }
+    const stage = { speciesId: 'gamer', level: 2, title: 'x' }
     expect(enemyLevel(stage, 'normal')).toBe(2)
     expect(enemyLevel(stage, 'dificil')).toBe(2 + DIFFICULTIES.dificil.levelOffset)
     expect(enemyLevel(stage, 'facil')).toBe(1)
@@ -38,7 +38,7 @@ describe('dificultad', () => {
 
   it('en difícil el rival siempre elige el mejor ataque; en fácil, a menudo no', () => {
     const enemy = createFighter('brasito', 10)
-    const player = createFighter('zarzo', 10)
+    const player = createFighter('dev', 10)
     const seq = (values: number[]) => {
       let i = 0
       return () => values[i++ % values.length]

@@ -28,6 +28,9 @@ export const MOVES: Record<string, Move> = {
   abrazo: { id: 'abrazo', name: 'Abrazo de oso', type: 'sombra', power: 45, accuracy: 100 },
   rulazo: { id: 'rulazo', name: 'Rulazo', type: 'planta', power: 50, accuracy: 100 },
   eclipse: { id: 'eclipse', name: 'Eclipse', type: 'sombra', power: 75, accuracy: 85 },
+  rage: { id: 'rage', name: 'Rage quit', type: 'fuego', power: 40, accuracy: 100 },
+  bajo: { id: 'bajo', name: 'Bajo a fondo', type: 'agua', power: 40, accuracy: 100 },
+  bug: { id: 'bug', name: 'Bug crítico', type: 'planta', power: 40, accuracy: 100 },
 }
 
 export const SPECIES: Record<string, Species> = {
@@ -61,49 +64,49 @@ export const SPECIES: Record<string, Species> = {
     type: 'sombra',
     base: { hp: 58, attack: 55, defense: 52, speed: 50 },
     moves: ['sonrisa', 'abrazo', 'rulazo', 'brasa'],
-    art: 'umbra',
+    art: 'shadow',
     image: '/characters/mateo.jpg',
   },
-  chispo: {
-    id: 'chispo',
-    name: 'Chispo',
+  // Variantes de Shadow: el mismo busto con distintos accesorios y paleta.
+  gamer: {
+    id: 'gamer',
+    name: 'Shadow Gamer',
     type: 'fuego',
     base: { hp: 40, attack: 50, defense: 35, speed: 50 },
-    moves: ['brasa', 'placaje'],
-    art: 'chispo',
+    moves: ['rage', 'placaje'],
+    art: 'shadow-gamer',
   },
-  pozo: {
-    id: 'pozo',
-    name: 'Pozo',
+  dj: {
+    id: 'dj',
+    name: 'Shadow DJ',
     type: 'agua',
     base: { hp: 50, attack: 40, defense: 50, speed: 35 },
-    moves: ['burbuja', 'placaje'],
-    art: 'pozo',
+    moves: ['bajo', 'placaje'],
+    art: 'shadow-dj',
   },
-  zarzo: {
-    id: 'zarzo',
-    name: 'Zarzo',
+  dev: {
+    id: 'dev',
+    name: 'Shadow Dev',
     type: 'planta',
     base: { hp: 48, attack: 45, defense: 48, speed: 40 },
-    moves: ['hoja', 'placaje'],
-    art: 'zarzo',
+    moves: ['bug', 'placaje'],
+    art: 'shadow-dev',
   },
-  umbra: {
-    id: 'umbra',
-    name: 'Umbra',
+  shadow: {
+    id: 'shadow',
+    name: 'Shadow',
     type: 'sombra',
     base: { hp: 55, attack: 60, defense: 50, speed: 60 },
     moves: ['garra', 'placaje', 'brasa'],
-    art: 'umbra',
+    art: 'shadow',
   },
   rey: {
     id: 'rey',
-    name: 'Rey Sombra',
+    name: 'Rey Shadow',
     type: 'sombra',
     base: { hp: 75, attack: 70, defense: 65, speed: 65 },
     moves: ['eclipse', 'garra', 'llamarada', 'chorro'],
-    art: 'rey',
-    image: '/characters/rey-sombra.png',
+    art: 'shadow-rey',
   },
 }
 
@@ -114,10 +117,10 @@ export const START_LEVEL = 5
 export const LEVELS_PER_WIN = 2
 
 export const STAGES: Stage[] = [
-  { speciesId: 'chispo', level: 2, title: 'Arena 1' },
-  { speciesId: 'pozo', level: 4, title: 'Arena 2' },
-  { speciesId: 'zarzo', level: 5, title: 'Arena 3' },
-  { speciesId: 'umbra', level: 7, title: 'Arena 4' },
+  { speciesId: 'gamer', level: 2, title: 'Arena 1' },
+  { speciesId: 'dj', level: 4, title: 'Arena 2' },
+  { speciesId: 'dev', level: 5, title: 'Arena 3' },
+  { speciesId: 'shadow', level: 7, title: 'Arena 4' },
   { speciesId: 'rey', level: 10, title: 'Jefe final' },
 ]
 

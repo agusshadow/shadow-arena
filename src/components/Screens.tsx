@@ -208,7 +208,7 @@ export function EndScreen({
           )}
           <p>
             {won
-              ? `Superaste los ${STAGES.length} combates en dificultad ${DIFFICULTIES[difficulty].label} y derrotaste al Rey Sombra.`
+              ? `Superaste los ${STAGES.length} combates en dificultad ${DIFFICULTIES[difficulty].label} y derrotaste al Rey Shadow.`
               : `Llegaste hasta ${STAGES[Math.min(reached, STAGES.length - 1)].title}. ¡La próxima sale!`}
           </p>
           <StatsList stats={stats} />
