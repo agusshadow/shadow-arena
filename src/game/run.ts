@@ -1,4 +1,4 @@
-import { LEVELS_PER_WIN, STAGES, START_LEVEL } from './data'
+import { LEVELS_PER_WIN, STAGES, START_LEVEL, STARTERS } from './data'
 import type { BattleStats, Difficulty } from './types'
 
 /** Progreso de una partida: se guarda para poder seguir al recargar. */
@@ -56,7 +56,7 @@ export function loadSave(): Save {
     const parsed = JSON.parse(raw) as Partial<Save> & { run?: Partial<Run> | null }
     const r = parsed.run
     const run: Run | null =
-      r && typeof r.starterId === 'string' && Number.isInteger(r.level) && Number.isInteger(r.stage) && (r.stage as number) < STAGES.length
+      r && (STARTERS as readonly string[]).includes(r.starterId as string) && Number.isInteger(r.level) && Number.isInteger(r.stage) && (r.stage as number) < STAGES.length
         ? {
             starterId: r.starterId,
             level: r.level as number,
