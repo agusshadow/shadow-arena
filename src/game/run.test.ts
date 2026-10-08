@@ -36,14 +36,14 @@ describe('dificultad', () => {
     expect(enemyLevel(stage, 'facil')).toBe(1)
   })
 
-  it('en difícil el rival casi siempre elige el mejor ataque; en fácil, no', () => {
+  it('en difícil el rival siempre elige el mejor ataque; en fácil, a menudo no', () => {
     const enemy = createFighter('brasito', 10)
     const player = createFighter('zarzo', 10)
     const seq = (values: number[]) => {
       let i = 0
       return () => values[i++ % values.length]
     }
-    // Con rng 0.2: en difícil (10% de azar) no entra al azar y elige el mejor ataque (Llamarada).
+    // Con rng 0.2: en difícil (sin azar) no entra al azar y elige el mejor ataque (Llamarada).
     expect(chooseEnemyMove(enemy, player, seq([0.2]), DIFFICULTIES.dificil.aiRandomness).id).toBe('llamarada')
     // En fácil (60% de azar) sí entra al azar; con el siguiente rng 0.99 elige el último ataque.
     expect(chooseEnemyMove(enemy, player, seq([0.2, 0.99]), DIFFICULTIES.facil.aiRandomness).id).toBe(

@@ -132,7 +132,7 @@ export interface DifficultyConfig {
 export const DIFFICULTIES: Record<Difficulty, DifficultyConfig> = {
   facil: { label: 'Fácil', description: 'Rivales más débiles y menos astutos.', levelOffset: -2, aiRandomness: 0.6 },
   normal: { label: 'Normal', description: 'La experiencia pensada del juego.', levelOffset: 0, aiRandomness: 0.3 },
-  dificil: { label: 'Difícil', description: 'Rivales más fuertes que casi siempre eligen bien.', levelOffset: 2, aiRandomness: 0.1 },
+  dificil: { label: 'Difícil', description: 'Los rivales siempre eligen el mejor ataque.', levelOffset: 0, aiRandomness: 0 },
 }
 
 export const DIFFICULTY_ORDER: Difficulty[] = ['facil', 'normal', 'dificil']
