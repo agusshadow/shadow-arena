@@ -1,14 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
-import { createBattle, createFighter, resolveTurn, typeName } from '../game/battle'
-import { STAGES } from '../game/data'
-import type { BattleEvent, BattleOutcome, BattleState, Fighter, Move } from '../game/types'
+import { sfx } from '../audio'
+import { battleStatsBetween, createBattle, createFighter, resolveTurn, typeName } from '../game/battle'
+import { DIFFICULTIES, enemyLevel, STAGES } from '../game/data'
+import { addStats, EMPTY_STATS } from '../game/run'
+import type { BattleEvent, BattleOutcome, BattleState, BattleStats, Difficulty, Fighter, Move } from '../game/types'
 import { CreatureArt } from './CreatureArt'
 
 interface Props {
   starterId: string
   level: number
   stage: number
-  onEnd: (outcome: Exclude<BattleOutcome, 'ongoing'>) => void
+  difficulty: Difficulty
+  onEnd: (outcome: Exclude<BattleOutcome, 'ongoing'>, stats: BattleStats) => void
+}
+
+interface Floater {
+  id: number
+  side: 'player' | 'enemy'
+  text: string
 }
 
 interface View {
@@ -19,6 +28,7 @@ interface View {
   text: string
   animating: 'player-attack' | 'enemy-attack' | null
   flash: 'player' | 'enemy' | null
+  floaters: Floater[]
 }
 
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -57,10 +67,30 @@ function InfoBox({ fighter, hp, align }: { fighter: Fighter; hp: number; align: 
   )
 }
 
-export function Battle({ starterId, level, stage, onEnd }: Props) {
+function FloatingNumbers({ floaters, side }: { floaters: Floater[]; side: 'player' | 'enemy' }) {
+  return (
+    <>
+      {floaters
+        .filter((f) => f.side === side)
+        .map((f) => (
+          <span
+            key={f.id}
+            aria-hidden="true"
+            className="float-up font-pixel pointer-events-none absolute -top-2 left-1/2 z-20 text-sm text-warning"
+            style={{ textShadow: '2px 2px 0 #000' }}
+          >
+            {f.text}
+          </span>
+        ))}
+    </>
+  )
+}
+
+export function Battle({ starterId, level, stage, difficulty, onEnd }: Props) {
   const stageInfo = STAGES[stage]
+  const config = DIFFICULTIES[difficulty]
   const [battle, setBattle] = useState<BattleState>(() =>
-    createBattle(createFighter(starterId, level), createFighter(stageInfo.speciesId, stageInfo.level)),
+    createBattle(createFighter(starterId, level), createFighter(stageInfo.speciesId, enemyLevel(stageInfo, difficulty))),
   )
   const [view, setView] = useState<View>(() => ({
     playerHp: battle.player.hp,
@@ -70,9 +100,12 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
     text: `¡${battle.enemy.species.name} salvaje (Nv ${battle.enemy.level}) aparece!`,
     animating: null,
     flash: null,
+    floaters: [],
   }))
   const [busy, setBusy] = useState(false)
   const mounted = useRef(true)
+  const totals = useRef<BattleStats>(EMPTY_STATS)
+  const floaterId = useRef(0)
 
   useEffect(() => {
     mounted.current = true
@@ -84,24 +117,42 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
   const sleep = (ms: number) =>
     new Promise<void>((resolve) => setTimeout(resolve, reducedMotion() ? Math.min(ms, 250) : ms))
 
-  async function play(events: BattleEvent[], attackerSideForText: (text: string) => 'player' | 'enemy' | null) {
+  async function play(events: BattleEvent[], before: BattleState, sideOf: (text: string) => 'player' | 'enemy' | null) {
+    const hp = { player: before.player.hp, enemy: before.enemy.hp }
     for (const event of events) {
       if (!mounted.current) return
       if (event.kind === 'text') {
-        const side = attackerSideForText(event.text)
+        const side = sideOf(event.text)
+        if (event.text.includes('muy efectivo')) {
+          if (event.text.startsWith('No')) sfx.weakHit()
+          else sfx.superHit()
+        } else if (event.text.includes('falló')) {
+          sfx.miss()
+        } else if (event.text.includes('Ganaste')) {
+          sfx.win()
+        } else if (event.text.includes('Perdiste')) {
+          sfx.lose()
+        }
         setView((v) => ({ ...v, text: event.text, animating: side ? (side === 'player' ? 'player-attack' : 'enemy-attack') : null }))
         await sleep(side ? 900 : 700)
         setView((v) => ({ ...v, animating: null }))
       } else if (event.kind === 'damage') {
+        const dealt = hp[event.target] - event.hp
+        hp[event.target] = event.hp
+        const id = ++floaterId.current
+        // El golpe normal suena acá; los efectivos suenan al mostrar su mensaje.
+        sfx.hit()
         setView((v) => ({
           ...v,
           flash: event.target,
           playerHp: event.target === 'player' ? event.hp : v.playerHp,
           enemyHp: event.target === 'enemy' ? event.hp : v.enemyHp,
+          floaters: [...v.floaters, { id, side: event.target, text: `-${dealt}` }],
         }))
         await sleep(500)
-        setView((v) => ({ ...v, flash: null }))
+        setView((v) => ({ ...v, flash: null, floaters: v.floaters.filter((f) => f.id !== id) }))
       } else {
+        sfx.faint()
         setView((v) => ({
           ...v,
           playerFainted: event.target === 'player' ? true : v.playerFainted,
@@ -114,11 +165,14 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
 
   async function choose(move: Move) {
     if (busy || battle.outcome !== 'ongoing') return
+    sfx.click()
     setBusy(true)
-    const { state, events } = resolveTurn(battle, move, Math.random)
-    const playerName = battle.player.species.name
-    const enemyName = battle.enemy.species.name
-    await play(events, (text) => {
+    const before = battle
+    const { state, events } = resolveTurn(before, move, Math.random, config.aiRandomness)
+    totals.current = addStats(totals.current, battleStatsBetween(before, state))
+    const playerName = before.player.species.name
+    const enemyName = before.enemy.species.name
+    await play(events, before, (text) => {
       if (text.startsWith(`${playerName} usa`)) return 'player'
       if (text.startsWith(`${enemyName} usa`)) return 'enemy'
       return null
@@ -135,7 +189,7 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
   return (
     <section aria-label={`Combate: ${stageInfo.title}`} className="mx-auto flex w-full max-w-md flex-col gap-3 p-3">
       <p className="font-pixel text-[10px] text-muted-foreground">
-        {stageInfo.title} · {stage + 1}/{STAGES.length}
+        {stageInfo.title} · {stage + 1}/{STAGES.length} · {config.label}
       </p>
 
       <div className="px-box relative aspect-[4/5] w-full overflow-hidden">
@@ -143,17 +197,23 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
         <div className="relative z-10 flex h-full flex-col justify-between p-3">
           <div className="flex items-start">
             <InfoBox fighter={battle.enemy} hp={view.enemyHp} align="left" />
-            <div
-              className={`ml-auto ${isLast ? 'size-36' : 'size-28'} ${view.enemyFainted ? 'faint' : view.animating === 'enemy-attack' ? 'lunge-left' : view.flash === 'enemy' ? 'hit' : 'idle'}`}
-            >
-              <CreatureArt species={battle.enemy.species} className="size-full" />
+            <div className={`relative ml-auto ${isLast ? 'size-36' : 'size-28'}`}>
+              <div
+                className={`size-full ${view.enemyFainted ? 'faint' : view.animating === 'enemy-attack' ? 'lunge-left' : view.flash === 'enemy' ? 'hit' : 'idle'}`}
+              >
+                <CreatureArt species={battle.enemy.species} className="size-full" />
+              </div>
+              <FloatingNumbers floaters={view.floaters} side="enemy" />
             </div>
           </div>
           <div className="flex items-end">
-            <div
-              className={`size-32 ${view.playerFainted ? 'faint' : view.animating === 'player-attack' ? 'lunge-right' : view.flash === 'player' ? 'hit' : 'idle'}`}
-            >
-              <CreatureArt species={battle.player.species} className="size-full -scale-x-100" />
+            <div className="relative size-32">
+              <div
+                className={`size-full ${view.playerFainted ? 'faint' : view.animating === 'player-attack' ? 'lunge-right' : view.flash === 'player' ? 'hit' : 'idle'}`}
+              >
+                <CreatureArt species={battle.player.species} className="size-full -scale-x-100" />
+              </div>
+              <FloatingNumbers floaters={view.floaters} side="player" />
             </div>
             <InfoBox fighter={battle.player} hp={view.playerHp} align="right" />
           </div>
@@ -168,7 +228,10 @@ export function Battle({ starterId, level, stage, onEnd }: Props) {
         <button
           type="button"
           className="px-btn font-pixel px-4 text-xs"
-          onClick={() => onEnd(won ? 'player-won' : 'player-lost')}
+          onClick={() => {
+            sfx.select()
+            onEnd(won ? 'player-won' : 'player-lost', totals.current)
+          }}
         >
           {won ? (isLast ? '¡Terminar!' : 'Siguiente combate') : 'Continuar'}
         </button>

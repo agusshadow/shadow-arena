@@ -173,3 +173,56 @@ button:not(:disabled) {
     transition: none;
   }
 }
+
+/* Números de daño que suben y se desvanecen. */
+.float-up {
+  animation: float-up 700ms steps(7) forwards;
+}
+@keyframes float-up {
+  from {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  to {
+    transform: translate(-50%, -48px);
+    opacity: 0;
+  }
+}
+
+/* Pantalla de victoria. */
+.confetti {
+  animation: confetti-fall linear infinite;
+}
+@keyframes confetti-fall {
+  from {
+    transform: translateY(-20px) rotate(0deg);
+  }
+  to {
+    transform: translateY(105dvh) rotate(360deg);
+  }
+}
+
+.star-pop {
+  animation: star-pop 600ms steps(6) both;
+}
+@keyframes star-pop {
+  from {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float-up,
+  .confetti,
+  .star-pop {
+    animation: none;
+  }
+  .confetti {
+    display: none;
+  }
+}
